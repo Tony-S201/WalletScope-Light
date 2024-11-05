@@ -1,0 +1,26 @@
+# dependencies
+node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# logs and saves
+*.log
+*.swp
+*.swo
+*.swn
+
+# mac and windows saves
+.DS_Store
+Thumbs.db
+
+# build files
+dist/
+build/
+
+# env files
+.env
