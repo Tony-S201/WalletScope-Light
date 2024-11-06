@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const connectDB = require("./config/db");
 
 const tokenRouter = require('./routes/tokensRoutes');
@@ -14,6 +15,11 @@ connectDB();
 
 // Middleware
 app.use(express.json());
+
+// Cors
+app.use(cors({
+    origin: process.env.FRONT_URL ?? 'http://localhost:3000'
+}));
 
 // Routes
 app.use('/api/tokens', tokenRouter);
