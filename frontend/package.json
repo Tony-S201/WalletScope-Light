@@ -10,18 +10,25 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.1.6",
     "@mui/material": "^6.1.6",
+    "@mui/x-charts": "^7.22.1",
+    "@mui/x-data-grid": "^7.22.1",
     "@rainbow-me/rainbowkit": "^2.2.0",
     "@tanstack/react-query": "^5.55.3",
     "next": "^14.2.10",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-qr-code": "^2.0.15",
     "viem": "2.17.0",
     "wagmi": "^2.12.17"
   },
   "devDependencies": {
     "@types/node": "^20.14.8",
     "@types/react": "^18.3.5",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
     "typescript": "5.5.2"
   }
 }
