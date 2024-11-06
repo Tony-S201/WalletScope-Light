@@ -1,8 +1,10 @@
 import QRCode from 'react-qr-code';
 import { DataGrid } from '@mui/x-data-grid';
+import { useRouter } from 'next/router';
 
 const WalletDetail: React.FunctionComponent = (): JSX.Element => {
-  const walletAddress = "0x1234...5678"; // Get addy from URL
+  const router = useRouter();
+  const { address } = router.query;
 
   return (
     <div className="space-y-6">
@@ -11,7 +13,11 @@ const WalletDetail: React.FunctionComponent = (): JSX.Element => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* QR Code */}
         <div className="flex justify-center items-center bg-white p-4 rounded-lg">
-          <QRCode value={walletAddress} size={150} />
+          {typeof address === 'string' && (
+            <div className="p-4 bg-white rounded-lg">
+              <QRCode value={address} size={128} />
+            </div>
+          )}
         </div>
 
         {/* Wallet Details */}
@@ -21,7 +27,7 @@ const WalletDetail: React.FunctionComponent = (): JSX.Element => {
           </h2>
           <div className="space-y-2">
             <p className="text-gray-600 dark:text-gray-400">
-              Adress: {walletAddress}
+              Adress: {address}
             </p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
               $12,345.67
