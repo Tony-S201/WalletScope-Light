@@ -15,7 +15,7 @@ const DashboardPage: React.FunctionComponent = (): JSX.Element => {
         {/* Token repartition */}
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
           <h3 className="text-lg font-medium mb-4 text-gray-700 dark:text-gray-300">
-            Répartition par Token
+            Token repartition
           </h3>
           <PieChart
             series={[{
@@ -33,7 +33,7 @@ const DashboardPage: React.FunctionComponent = (): JSX.Element => {
         {/* Evolution */}
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
           <h3 className="text-lg font-medium mb-4 text-gray-700 dark:text-gray-300">
-            Évolution de la Valeur
+            Evolution
           </h3>
           <LineChart
             xAxis={[{ data: [1, 2, 3, 4, 5, 6, 7] }]}
@@ -52,7 +52,7 @@ const DashboardPage: React.FunctionComponent = (): JSX.Element => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
           <h3 className="text-lg font-medium mb-4 text-gray-700 dark:text-gray-300">
-            Répartition par Wallet
+            Wallet Repartition
           </h3>
           <div className="space-y-4">
             {/* Wallet list */}
@@ -62,7 +62,7 @@ const DashboardPage: React.FunctionComponent = (): JSX.Element => {
 
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
           <h3 className="text-lg font-medium mb-4 text-gray-700 dark:text-gray-300">
-            Positions Staking
+            Staking positions
           </h3>
           <PieChart
             series={[{

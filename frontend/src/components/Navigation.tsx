@@ -1,6 +1,7 @@
 import { ThemeToggle } from './ThemeToggle';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const Navigation: React.FunctionComponent = (): JSX.Element => {
   const router = useRouter();
@@ -67,7 +68,7 @@ const Navigation: React.FunctionComponent = (): JSX.Element => {
             </div>
           </div>
         </div>
-
+        <ConnectButton/>
         <ThemeToggle />
       </div>
     </nav>
