@@ -5,10 +5,8 @@ const walletController = require('../controllers/walletsController');
 const router = express.Router();
 
 // Wallets routes.
-/*
-GET / - Liste tous les wallets
-POST / - Ajoute un wallet
-GET /:id - Détails d'un wallet
-*/
+router.get('/all', walletController.getWallets);
+router.post('/register', walletController.registerWallet);
+router.get('/:id', walletController.getWalletById);
 
 module.exports = router;

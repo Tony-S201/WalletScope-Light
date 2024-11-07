@@ -9,7 +9,7 @@ const Home: NextPage = () => {
         <div className="text-center">
           <h1 className="text-5xl md:text-7xl font-bold mb-8">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-emerald-500">
-              CryptoTracker
+              Wallet Scope Light
             </span>
           </h1>
           <p className="text-xl md:text-2xl dark:text-gray-300 light:text-gray-600 mb-12 max-w-2xl mx-auto">
