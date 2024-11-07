@@ -21,26 +21,28 @@ export enum TokenType {
 
 export interface Token {
   id: string;               // Identifiant unique du token
-  address: string;          // Adresse du contrat du token
+  contractAddress: string;          // Adresse du contrat du token
   name: string;            // Nom complet du token
   symbol: string;          // Symbole du token (ex: ETH, BTC)
-  decimals: number;        // Nombre de décimales du token
+  //decimals: number;        // Nombre de décimales du token
   network: NetworkType;    // Réseau sur lequel se trouve le token
-  type: TokenType;         // Type de token
-  logoUrl?: string;        // URL du logo du token
-  websiteUrl?: string;     // Site web officiel
-  isVerified: boolean;     // Token vérifié ou non
+  //type: TokenType;         // Type de token
+  //logoUrl?: string;        // URL du logo du token
+  //websiteUrl?: string;     // Site web officiel
+  //isVerified: boolean;     // Token vérifié ou non
   
   // Informations de prix
-  currentPrice: number;     // Prix actuel en USD
-  priceChange24h: number;  // Variation de prix sur 24h en pourcentage
-  priceChangePercentage24h: number;
-  marketCap?: number;      // Capitalisation boursière
-  volume24h?: number;      // Volume sur 24h
+  //currentPrice: number;     // Prix actuel en USD
+  //priceChange24h: number;  // Variation de prix sur 24h en pourcentage
+  //priceChangePercentage24h: number;
+  //marketCap?: number;      // Capitalisation boursière
+  //volume24h?: number;      // Volume sur 24h
   
   // Données supplémentaires optionnelles
   coingeckoId?: string;    // ID CoinGecko pour les API externes
-  cmcId?: string;          // ID CoinMarketCap
+  manualPrice?: number;
+  amount?: number;
+  //cmcId?: string;          // ID CoinMarketCap
 }
 
 export interface TokenPrice {
@@ -59,23 +61,21 @@ export interface TokenBalance {
 export interface Wallet {
   id: string;             // Identifiant unique du wallet
   address: string;        // Adresse du wallet
-  network: NetworkType;   // Réseau principal du wallet
-  type: WalletType;      // Type de wallet
-  name?: string;         // Nom personnalisé (optionnel)
+  name: string;         // Nom personnalisé (optionnel)
   
   // Balances
-  balances: TokenBalance[];  // Liste des tokens détenus
-  totalValueUSD: number;     // Valeur totale en USD
+  //balances: TokenBalance[];  // Liste des tokens détenus
+  //totalValueUSD: number;     // Valeur totale en USD
   
   // Statistiques
-  lastActivity?: Date;       // Dernière activité détectée
-  transactionCount?: number; // Nombre total de transactions
-  createdAt: Date;          // Date de création du wallet dans notre système
-  updatedAt: Date;          // Dernière mise à jour des données
+  //lastActivity?: Date;       // Dernière activité détectée
+  //transactionCount?: number; // Nombre total de transactions
+  //createdAt: Date;          // Date de création du wallet dans notre système
+  //updatedAt: Date;          // Dernière mise à jour des données
   
   // Flags
-  isWatched: boolean;       // Wallet surveillé par l'utilisateur
-  isFavorite: boolean;      // Wallet marqué comme favori
+  //isWatched: boolean;       // Wallet surveillé par l'utilisateur
+  //isFavorite: boolean;      // Wallet marqué comme favori
 }
 
 export interface Transaction {

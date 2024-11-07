@@ -13,7 +13,8 @@ const tokenSchema = new mongoose.Schema({
   manualPrice: {
     usd: Number,
     updatedAt: Date
-  }
+  },
+  amount: { type: Number, defaultValue: 0 }
 });
 
 const Token = mongoose.model('Token', tokenSchema);

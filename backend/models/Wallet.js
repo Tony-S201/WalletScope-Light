@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const walletSchema = new mongoose.Schema({
-  address: { type: String, required: true, unique: true },
+  author: { type: String, required: true },
+  address: { type: String, required: true },
   name: { type: String, required: true },
-  network: { type: String, required: true }
 });
 
 const Wallet = mongoose.model('Wallet', walletSchema);

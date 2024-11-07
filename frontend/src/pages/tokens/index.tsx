@@ -1,6 +1,64 @@
+import { useEffect, useState } from 'react';
+import { useAccount } from 'wagmi';
 import { DataGrid } from '@mui/x-data-grid';
+import { useApi } from '../../hooks/useApi';
+import { type Token } from '../../types';
+
+interface TokenForm {
+  name: string,
+  symbol: string,
+  contractAddress: string, 
+  network: string,
+  coingeckoId: string | null,
+  manualPrice: number | null,
+  amount: number,
+}
+
+interface Row {
+  id: string,
+  name: string,
+  symbol: string,
+  contractAddress: string,
+  network: string,
+  price: number,
+  amount: number,
+}
 
 const TokenPage: React.FunctionComponent = (): JSX.Element => {
+  const { data: tokens, loading, error, fetchData } = useApi<Token[]>();
+  const { loading: postLoading, error: postError, postData } = useApi<Token[]>();
+  const { address: connectedAddress, isConnected } = useAccount();
+  const [rows, setRows] = useState<Row[]>([]);
+  const [formData, setFormData] = useState<TokenForm>({
+    name: '',
+    symbol: '',
+    contractAddress: '', 
+    network: '',
+    coingeckoId: '',
+    manualPrice: 0,
+    amount: 0
+  });
+
+  /* Use Effect Hooks */
+  useEffect(() => {
+    if (isConnected) {
+      fetchData('/tokens/all');
+    }
+  }, [fetchData, isConnected]);
+
+  useEffect(() => {
+    if (tokens) {
+      const newRows = tokens.map(token => ({
+        id: token.id,
+        name: token.name,
+        contractAddress: token.contractAddress,
+        symbol: token.symbol,
+        price: token.manualPrice
+      }));
+      setRows(newRows);
+    }
+  }, [tokens]);
+
   return (
     <div className="space-y-6">
       {/* Search / Filter */}

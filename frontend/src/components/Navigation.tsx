@@ -19,8 +19,10 @@ const Navigation: React.FunctionComponent = (): JSX.Element => {
           </Link>
           <ConnectedNav connected={isConnected} />
         </div>
-        <ConnectButton/>
-        <ThemeToggle />
+        <div className="flex space-x-8">
+          <ConnectButton/>
+          <ThemeToggle />
+        </div>
       </div>
     </nav>
   )

@@ -11,10 +11,19 @@ async function getWallets(req, res) {
 }
 
 async function registerWallet(req, res) {
-  const value  = req.body;
-
   try {
-    const wallet = new Wallet(value);
+    const { author, name, address } = req.body;
+
+    if (!author || !name || !address) {
+      return res.status(400).json({ message: 'Tous les champs sont requis' });
+    }
+
+    const wallet = new Wallet({
+      author,
+      name,
+      address
+    });
+    
     await wallet.save();
     res.status(201).json({ message: "Wallet successfully registered", item: wallet });
   } catch(error) {

@@ -1,7 +1,13 @@
 const Token = require('../models/Token');
 
 async function getTokens(req, res) {
-
+  try {
+    const tokens = await Token.find();
+    res.status(200).json(tokens);
+  } catch(error) {
+    console.error("Error during token fetch");
+    res.status(500).json({ message: "Error during fetch all tokens" });
+  }
 }
 
 async function registerToken(req, res) {
