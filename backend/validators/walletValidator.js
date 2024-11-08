@@ -4,6 +4,7 @@ const Joi = require('joi');
 
 const walletSchema = {
   create: Joi.object({
+    author: Joi.string().required(),
     name: Joi.string().required(),
     address: Joi.string().required().length(42)
   }),

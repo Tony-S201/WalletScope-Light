@@ -1,6 +1,12 @@
 const express = require('express');
+
+// Controller
 const WalletController = require('../controllers/walletsController');
+
+// Middleware
 const validate = require('../middlewares/validator');
+
+// Schema for middleware
 const walletSchema = require('../validators/walletValidator');
 
 // Define as router file.

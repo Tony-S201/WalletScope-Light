@@ -1,10 +1,19 @@
+interface ApiSuccessResponse<T> {
+  success: boolean;
+  data: T;
+}
+
+interface ApiErrorResponse {
+  success: boolean;
+  error: string;
+}
+
 interface ApiResponse<T> {
   data: T | null;
   error: string | null;
 }
 
 export const apiService = {
-
   // GET
   async get<T>(endpoint: string): Promise<ApiResponse<T>> {
     try {
@@ -12,8 +21,19 @@ export const apiService = {
       if (!response.ok) {
         throw new Error(`HTTP Error - Status: ${response.status}`);
       }
-      const data = await response.json();
-      return { data, error: null };
+      const jsonResponse = await response.json() as ApiSuccessResponse<T> | ApiErrorResponse;
+      
+      if (!jsonResponse.success) {
+        return { 
+          data: null, 
+          error: (jsonResponse as ApiErrorResponse).error 
+        };
+      }
+
+      return { 
+        data: (jsonResponse as ApiSuccessResponse<T>).data, 
+        error: null 
+      };
     } catch(error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown Error';
       return { data: null, error: errorMessage }
@@ -31,12 +51,19 @@ export const apiService = {
         body: JSON.stringify(data)
       });
 
-      if (!response.ok) {
-        throw new Error(`POST HTTP Error - Status: ${response.status}`);
+      const jsonResponse = await response.json() as ApiSuccessResponse<T> | ApiErrorResponse;
+
+      if (!jsonResponse.success) {
+        return { 
+          data: null, 
+          error: (jsonResponse as ApiErrorResponse).error 
+        };
       }
 
-      const responseData = await response.json();
-      return { data: responseData, error: null };
+      return { 
+        data: (jsonResponse as ApiSuccessResponse<T>).data, 
+        error: null 
+      };
     } catch(error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown Error';
       return { data: null, error: errorMessage };
@@ -54,12 +81,19 @@ export const apiService = {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        throw new Error(`PUT HTTP Error - Status: ${response.status}`);
+      const jsonResponse = await response.json() as ApiSuccessResponse<T> | ApiErrorResponse;
+
+      if (!jsonResponse.success) {
+        return { 
+          data: null, 
+          error: (jsonResponse as ApiErrorResponse).error 
+        };
       }
 
-      const responseData = await response.json();
-      return { data: responseData, error: null };
+      return { 
+        data: (jsonResponse as ApiSuccessResponse<T>).data, 
+        error: null 
+      };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown Error';
       return { data: null, error: errorMessage };
@@ -73,12 +107,19 @@ export const apiService = {
         method: 'DELETE',
       });
 
-      if (!response.ok) {
-        throw new Error(`DELETE HTTP Error - Status: ${response.status}`);
+      const jsonResponse = await response.json() as ApiSuccessResponse<T> | ApiErrorResponse;
+
+      if (!jsonResponse.success) {
+        return { 
+          data: null, 
+          error: (jsonResponse as ApiErrorResponse).error 
+        };
       }
 
-      const responseData = await response.json();
-      return { data: responseData, error: null };
+      return { 
+        data: (jsonResponse as ApiSuccessResponse<T>).data, 
+        error: null 
+      };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown Error';
       return { data: null, error: errorMessage };
@@ -96,16 +137,22 @@ export const apiService = {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        throw new Error(`PATCH HTTP Error - Status: ${response.status}`);
+      const jsonResponse = await response.json() as ApiSuccessResponse<T> | ApiErrorResponse;
+
+      if (!jsonResponse.success) {
+        return { 
+          data: null, 
+          error: (jsonResponse as ApiErrorResponse).error 
+        };
       }
 
-      const responseData = await response.json();
-      return { data: responseData, error: null };
+      return { 
+        data: (jsonResponse as ApiSuccessResponse<T>).data, 
+        error: null 
+      };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown Error';
       return { data: null, error: errorMessage };
     }
   }
-
 }

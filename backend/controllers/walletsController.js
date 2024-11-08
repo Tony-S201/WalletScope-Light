@@ -27,9 +27,9 @@ class WalletController {
 
   async registerWallet(req, res) {
     try {
-      const { name, address } = req.body;
+      const { author, name, address } = req.body;
 
-      const wallet = await WalletRepository.create({ name, address });
+      const wallet = await WalletRepository.create({ author, name, address });
       res.status(201).json({
         success: true,
         data: wallet
