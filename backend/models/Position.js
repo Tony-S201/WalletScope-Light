@@ -1,3 +1,4 @@
+/* Position Model */
 const mongoose = require('mongoose');
 
 const positionSchema = new mongoose.Schema({

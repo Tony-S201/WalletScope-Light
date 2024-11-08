@@ -1,51 +1,72 @@
-const Wallet = require('../models/Wallet');
+/* Wallet Controller */
 
-async function getWallets(req, res) {
-  try {
-    const wallets = await Wallet.find();
-    res.status(200).json(wallets);
-  } catch(error) {
-    console.error("Error during wallet fetch");
-    res.status(500).json({ message: "Error during fetch all wallets" });
+const WalletRepository = require('../repositories/walletRepository');
+
+class WalletController {
+  constructor() {
+    this.getWallets = this.getWallets.bind(this);
+    this.registerWallet = this.registerWallet.bind(this);
+    this.getWalletById = this.getWalletById.bind(this);
   }
-}
 
-async function registerWallet(req, res) {
-  try {
-    const { author, name, address } = req.body;
-
-    if (!author || !name || !address) {
-      return res.status(400).json({ message: 'Tous les champs sont requis' });
+  async getWallets(req, res) {
+    try {
+      const wallets = await WalletRepository.findAll();
+      res.status(200).json({ 
+        success: true,
+        data: wallets
+      });
+    } catch (error) {
+      console.error('GetWallets Error:', error);
+      res.status(500).json({ 
+        success: false,
+        error: error.message
+      });
     }
-
-    const wallet = new Wallet({
-      author,
-      name,
-      address
-    });
-    
-    await wallet.save();
-    res.status(201).json({ message: "Wallet successfully registered", item: wallet });
-  } catch(error) {
-    console.error("Error during the wallet registration");
-    res.status(500).json({ message: "Error during wallet registration" });
   }
-}
 
-async function getWalletById(req, res) {
-  const { id } = req.params;
+  async registerWallet(req, res) {
+    try {
+      const { name, address } = req.body;
 
-  try {
-    const wallet = await Wallet.findById(id);
-    res.status(200).json(wallet);
-  } catch(error) {
-    console.error("Error during get wallet by id");
-    res.status(500).json({ message: "Error during get wallet by id" + id });
+      const wallet = await WalletRepository.create({ name, address });
+      res.status(201).json({
+        success: true,
+        data: wallet
+      });
+    } catch (error) {
+      console.error('CreateWallet Error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
   }
+
+  async getWalletById(req, res) {
+    try {
+      const wallet = await WalletRepository.findById(req.params.id);
+      
+      if (!wallet) {
+        return res.status(404).json({
+          success: false,
+          error: 'Wallet not found'
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        data: wallet
+      });
+    } catch (error) {
+      console.error('GetWalletById Error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  }
+
 }
 
-module.exports = {
-  getWallets,
-  registerWallet,
-  getWalletById,
-}
+module.exports = WalletController;
