@@ -9,10 +9,10 @@ const validate = require('../middlewares/validator');
 // Schema for middleware
 const walletSchema = require('../validators/walletValidator');
 
-// Define as router file.
+// Define as router file
 const router = express.Router();
 
-// Create an instance of WalletController.
+// Create an instance of WalletController
 const walletController = new WalletController();
 
 // Wallets routes.

@@ -20,7 +20,7 @@ export enum TokenType {
 }
 
 export interface Token {
-  id: string;               // Identifiant unique du token
+  _id: string;               // Identifiant unique du token
   contractAddress: string;          // Adresse du contrat du token
   name: string;            // Nom complet du token
   symbol: string;          // Symbole du token (ex: ETH, BTC)
@@ -39,6 +39,7 @@ export interface Token {
   //volume24h?: number;      // Volume sur 24h
   
   // Données supplémentaires optionnelles
+  lastKnownPrice?: number;
   coingeckoId?: string;    // ID CoinGecko pour les API externes
   manualPrice?: number;
   amount?: number;
@@ -59,7 +60,7 @@ export interface TokenBalance {
 }
 
 export interface Wallet {
-  id: string;             // Identifiant unique du wallet
+  _id: string;             // Identifiant unique du wallet
   address: string;        // Adresse du wallet
   name: string;         // Nom personnalisé (optionnel)
   

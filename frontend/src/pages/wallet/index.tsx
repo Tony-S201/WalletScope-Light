@@ -6,7 +6,7 @@ import { Table, TableRow, TableHead, TableCell, TableBody, TextField, Button } f
 import { useRouter } from "next/navigation";
 
 interface Row {
-  id: string,
+  _id: string,
   name: string,
   address: string,
   tokens: number,
@@ -42,7 +42,7 @@ const WalletPage: React.FunctionComponent = (): JSX.Element => {
   useEffect(() => {
     if (wallets) {
       const newRows = wallets.map(wallet => ({
-        id: wallet.id,
+        _id: wallet._id,
         name: wallet.name,
         address: wallet.address,
         tokens: 0,
@@ -168,11 +168,11 @@ const WalletPage: React.FunctionComponent = (): JSX.Element => {
             ) : (
               rows.map((row) => (
                 <TableRow
-                  key={row.id}
+                  key={row._id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell>
-                    <Button onClick={() => router.push('/wallet/0xblabla')}>Open Wallet</Button>
+                    <Button onClick={() => router.push(`/wallet/${row._id}`)}>Open Wallet</Button>
                   </TableCell>
                   <TableCell component="th" scope="row">{row.name}</TableCell>
                   <TableCell align="right">{row.address}</TableCell>

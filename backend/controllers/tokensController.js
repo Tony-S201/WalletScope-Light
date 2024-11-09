@@ -1,30 +1,72 @@
-const Token = require('../models/Token');
+/* Token Controller */
 
-async function getTokens(req, res) {
-  try {
-    const tokens = await Token.find();
-    res.status(200).json(tokens);
-  } catch(error) {
-    console.error("Error during token fetch");
-    res.status(500).json({ message: "Error during fetch all tokens" });
+const TokenRepository = require('../repositories/tokenRepository');
+
+class TokenController {
+  constructor() {
+    this.getTokens = this.getTokens.bind(this);
+    this.registerToken = this.registerToken.bind(this);
+    this.getTokenById = this.getTokenById.bind(this);
   }
+
+  async getTokens(req, res) {
+    try {
+      const tokens = await TokenRepository.findAll();
+      res.status(200).json({ 
+        success: true,
+        data: tokens
+      });
+    } catch (error) {
+      console.error('GetTokens Error:', error);
+      res.status(500).json({ 
+        success: false,
+        error: error.message
+      });
+    }
+  }
+
+  async registerToken(req, res) {
+    try {
+      const { name, symbol, contractAddress, network, coingecko, manualPrice, amount, walletId } = req.body;
+
+      const token = await TokenRepository.create({ name, symbol, contractAddress, network, coingecko, manualPrice, amount, walletId });
+      res.status(201).json({
+        success: true,
+        data: token
+      });
+    } catch (error) {
+      console.error('CreateToken Error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  }
+
+  async getTokenById(req, res) {
+    try {
+      const token = await TokenRepository.findById(req.params.id);
+      
+      if (!token) {
+        return res.status(404).json({
+          success: false,
+          error: 'Token not found'
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        data: token
+      });
+    } catch (error) {
+      console.error('GetTokenById Error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  }
+
 }
 
-async function registerToken(req, res) {
-
-}
-
-async function getTokenById(req, res) {
-
-}
-
-async function editToken(req, res) {
-
-}
-
-module.exports = {
-  getTokens,
-  registerToken,
-  getTokenById,
-  editToken
-}
+module.exports = TokenController;
