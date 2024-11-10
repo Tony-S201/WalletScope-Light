@@ -26,6 +26,7 @@ export interface Token {
   symbol: string;          // Symbole du token (ex: ETH, BTC)
   //decimals: number;        // Nombre de décimales du token
   network: NetworkType;    // Réseau sur lequel se trouve le token
+  walletId: string;
   //type: TokenType;         // Type de token
   //logoUrl?: string;        // URL du logo du token
   //websiteUrl?: string;     // Site web officiel

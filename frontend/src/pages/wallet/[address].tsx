@@ -11,7 +11,7 @@ interface Row {
   contractAddress: string,
   network: string,
   amount: number | undefined | null,
-  price: number
+  price: number | undefined | null
 }
 
 interface TokenForm {
@@ -22,13 +22,12 @@ interface TokenForm {
   network: string,
   coingeckoId: string | undefined | null | "",
   manualPrice: {
-    usd: number | undefined | null
+    usd: string | number | undefined | null
   },
   amount: number | undefined | null
 }
 
 const WalletDetail: React.FunctionComponent = (): JSX.Element => {
-  const { data: wallet, loading: walletLoading, error: walletError, fetchData: fetchWalletData } = useApi<Token[]>();
   const { data: tokens, loading, error, fetchData } = useApi<Token[]>();
   const { loading: postLoading, error: postError, postData } = useApi<Token[]>();
   const { address: connectedAddress, isConnected } = useAccount();
@@ -63,7 +62,7 @@ const WalletDetail: React.FunctionComponent = (): JSX.Element => {
         contractAddress: token.contractAddress,
         network: token.network,
         amount: token.amount,
-        price: token.lastKnownPrice ?? token.manualPrice ?? 0
+        price: token.lastKnownPrice?.usd ?? token.manualPrice?.usd
       }));
       setRows(newRows);
     }
@@ -216,13 +215,14 @@ const WalletDetail: React.FunctionComponent = (): JSX.Element => {
               onChange={(e) => setFormData(prev => ({
                 ...prev,
                 manualPrice: {
-                  usd: parseFloat(e.target.value) || null
+                  usd: e.target.value
                 }
               }))}
               label="Manual Price (USD)"
-              type="number"
               variant="outlined"
+              type="number"
               fullWidth
+              inputMode="decimal"
             />
             <TextField
               name="amount"
@@ -298,13 +298,13 @@ const WalletDetail: React.FunctionComponent = (): JSX.Element => {
                   </TableCell>
                   <TableCell>{row.network}</TableCell>
                   <TableCell align="right">
-                    {row.amount?.toLocaleString() || '0'}
+                    {row.amount || '0'}
                   </TableCell>
                   <TableCell align="right">
-                    ${row.price?.toLocaleString() || '0'}
+                    ${row.price || '0'}
                   </TableCell>
                   <TableCell align="right">
-                    ${totalValue.toLocaleString()}
+                    ${totalValue}
                   </TableCell>
                 </TableRow>
               );
