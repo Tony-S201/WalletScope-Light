@@ -19,5 +19,6 @@ const walletController = new WalletController();
 router.get('/all', walletController.getWallets);
 router.post('/register', validate(walletSchema.create), walletController.registerWallet);
 router.get('/:id', walletController.getWalletById);
+router.get('/user/:userAddress', walletController.getWalletByUser);
 
 module.exports = router;

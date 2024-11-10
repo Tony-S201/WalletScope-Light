@@ -28,12 +28,16 @@ interface TokenForm {
 }
 
 const WalletDetail: React.FunctionComponent = (): JSX.Element => {
+  // Custom Hooks
   const { data: tokens, loading, error, fetchData } = useApi<Token[]>();
   const { loading: postLoading, error: postError, postData } = useApi<Token[]>();
+
   const { address: connectedAddress, isConnected } = useAccount();
   const router = useRouter();
+
   const { address: walletAddress } = router.query; // Wallet Address from URL path
 
+  // Form & Display
   const [rows, setRows] = useState<Row[]>([]);
   const [formData, setFormData] = useState<TokenForm>({
     walletId: walletAddress,

@@ -67,6 +67,30 @@ class WalletController {
     }
   }
 
+  async getWalletByUser(req, res) {
+    try {
+      const wallets = await WalletRepository.findByUser(req.params.userAddress);
+      
+      if (!wallets) {
+        return res.status(404).json({
+          success: false,
+          error: 'User Wallets not found'
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        data: wallets
+      });
+    } catch (error) {
+      console.error('GetWalletById Error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  }
+
 }
 
 module.exports = WalletController;

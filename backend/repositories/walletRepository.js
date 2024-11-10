@@ -15,6 +15,10 @@ class WalletRepository {
   static async findById(id) {
     return await Wallet.findById(id);
   }
+
+  static async findByUser(address) {
+    return await Wallet.find({ author: address });
+  }
 }
 
 module.exports = WalletRepository;
