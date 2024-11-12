@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require("./config/db");
 
+const authRouter = require('./routes/authRoutes');
 const tokenRouter = require('./routes/tokensRoutes');
 const walletRouter = require('./routes/walletsRoutes');
 const positionRouter = require('./routes/positionsRoutes');
@@ -22,6 +23,7 @@ app.use(cors({
 }));
 
 // Routes
+app.use('/api/auth', authRouter);
 app.use('/api/tokens', tokenRouter);
 app.use('/api/wallets', walletRouter);
 app.use('/api/positions', positionRouter);
