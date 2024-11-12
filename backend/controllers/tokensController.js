@@ -27,9 +27,9 @@ class TokenController {
 
   async registerToken(req, res) {
     try {
-      const { name, symbol, contractAddress, network, coingecko, manualPrice, amount, walletId } = req.body;
+      const { name, symbol, contractAddress, network, coingecko, manualPrice } = req.body;
 
-      const token = await TokenRepository.create({ name, symbol, contractAddress, network, coingecko, manualPrice, amount, walletId });
+      const token = await TokenRepository.create({ name, symbol, contractAddress, network, coingecko, manualPrice });
       res.status(201).json({
         success: true,
         data: token

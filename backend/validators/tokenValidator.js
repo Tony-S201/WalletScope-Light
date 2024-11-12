@@ -4,7 +4,6 @@ const Joi = require('joi');
 
 const tokenSchema = {
   create: Joi.object({
-    walletId: Joi.string().required(),
     name: Joi.string().required(),
     symbol: Joi.string().required(),
     contractAddress: Joi.string().required(),
@@ -13,7 +12,6 @@ const tokenSchema = {
     manualPrice: {
       usd: Joi.number().allow(null)
     },
-    amount: Joi.number()
   }),
 };
 

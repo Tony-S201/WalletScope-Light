@@ -39,6 +39,16 @@ export const ConnectedNav = ({ connected }: { connected: boolean }) => {
             Wallet
           </span>
         </Link>
+
+        <Link href={'/positions'}>
+          <span className={`px-3 py-2 rounded-lg cursor-pointer transition-colors
+            ${isActive('/positions')
+              ? 'bg-blue-500 text-white'
+              : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700'
+            }`}>
+            Positions
+          </span>
+        </Link>
       </div>
     )
   }

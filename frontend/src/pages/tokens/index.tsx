@@ -9,18 +9,10 @@ interface TokenRow {
   name: string,
   contractAddress: string,
   network: string,
-  amount: number | undefined | null,
   price: number | undefined | null,
-  walletId: string
-}
-
-interface WalletName {
-  name: string,
-  _id: string
 }
 
 interface TokenForm {
-  walletId: string | string[] | undefined,
   name: string,
   symbol: string,
   contractAddress: string,
@@ -29,13 +21,11 @@ interface TokenForm {
   manualPrice: {
     usd: string | number | undefined | null
   },
-  amount: number | undefined | null
 }
 
 const TokenPage: React.FunctionComponent = (): JSX.Element => {
   // Custom Hooks
   const { data: tokens, loading, error, fetchData: fetchTokensData } = useAuthApi<Token[]>();
-  const { data: wallets, loading: walletsLoading, error: walletsError, fetchData: fetchWalletsData } = useAuthApi<Token[]>();
   const { loading: postLoading, error: postError, postData } = useAuthApi<Token[]>();
 
   const { address: connectedAddress, isConnected } = useAccount();
@@ -43,9 +33,7 @@ const TokenPage: React.FunctionComponent = (): JSX.Element => {
 
   // Form & Display
   const [rows, setRows] = useState<TokenRow[]>([]);
-  const [walletsNames, setWalletsNames] = useState<WalletName[]>([]);
   const [formData, setFormData] = useState<TokenForm>({
-    walletId: 'to do from select dropdown of wallet addresses',
     name: '',
     symbol: '',
     contractAddress: '',
@@ -54,26 +42,14 @@ const TokenPage: React.FunctionComponent = (): JSX.Element => {
     manualPrice: {
       usd: null
     },
-    amount: null
   });
 
   /* Use Effect Hooks */
   useEffect(() => {
     if (isConnected) {
-      fetchWalletsData(`/wallets/user/${connectedAddress}`)
       fetchTokensData('/tokens/all');
     }
-  }, [fetchWalletsData, fetchTokensData, isConnected]);
-
-  useEffect(() => {
-    if (wallets) {
-      const newRows = wallets.map(wallet => ({
-        name: wallet.name,
-        _id: wallet._id
-      }));
-      setWalletsNames(newRows);
-    }
-  }, [wallets]);
+  }, [fetchTokensData, isConnected]);
 
   useEffect(() => {
     if (tokens) {
@@ -81,9 +57,7 @@ const TokenPage: React.FunctionComponent = (): JSX.Element => {
         name: token.name,
         contractAddress: token.contractAddress,
         network: token.network,
-        amount: token.amount,
         price: token.lastKnownPrice?.usd ?? token.manualPrice?.usd,
-        walletId: token.walletId
       }));
       setRows(newRows);
     }
@@ -108,7 +82,6 @@ const TokenPage: React.FunctionComponent = (): JSX.Element => {
 
       // POST Request
       postData('/tokens/register', {
-        walletId: walletAddress,
         name: formData.name,
         symbol: formData.symbol,
         contractAddress: formData.contractAddress,
@@ -117,7 +90,6 @@ const TokenPage: React.FunctionComponent = (): JSX.Element => {
         manualPrice: {
           usd: formData.manualPrice.usd ?? null
         },
-        amount: formData.amount ?? 0
       });
      
       // Refresh wallet list
@@ -125,7 +97,6 @@ const TokenPage: React.FunctionComponent = (): JSX.Element => {
 
       // Empty form
       setFormData({
-        walletId: '',
         name: '',
         symbol: '',
         contractAddress: '',
@@ -134,7 +105,6 @@ const TokenPage: React.FunctionComponent = (): JSX.Element => {
         manualPrice: {
           usd: null
         },
-        amount: null
       });
     } catch (error) {
       console.error('Front - Error:', error);
@@ -155,7 +125,7 @@ const TokenPage: React.FunctionComponent = (): JSX.Element => {
             <div>Loading...</div>
           ) : postError ? (
             <div>Error {postError}, please refresh</div>
-          ) : walletsNames ? (
+          ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <TextField
                 name="name"
@@ -216,30 +186,6 @@ const TokenPage: React.FunctionComponent = (): JSX.Element => {
                 fullWidth
                 inputMode="decimal"
               />
-              <TextField
-                name="amount"
-                value={formData.amount || ''}
-                onChange={(e) => setFormData(prev => ({
-                  ...prev,
-                  amount: parseFloat(e.target.value) || null
-                }))}
-                label="Amount"
-                type="number"
-                variant="outlined"
-                fullWidth
-              />
-              <TextField
-                name="wallet"
-                select
-                label="Select"
-                helperText="Please select the wallet to link"
-              >
-                {walletsNames.map((option) => (
-                  <MenuItem key={option._id} value={option._id}>
-                    {option.name}
-                  </MenuItem>
-                ))}
-              </TextField>
               <div className="md:col-span-2 lg:col-span-3 flex justify-end">
                 <Button 
                   onClick={handleAddToken}
@@ -251,8 +197,6 @@ const TokenPage: React.FunctionComponent = (): JSX.Element => {
                 </Button>
               </div>
             </div>
-          ) : (
-            <div>Error - please refresh</div>
           )}
         </div>
       </div>
@@ -291,10 +235,7 @@ const TokenPage: React.FunctionComponent = (): JSX.Element => {
               <TableCell>Token</TableCell>
               <TableCell>Contract Address</TableCell>
               <TableCell>Network</TableCell>
-              <TableCell align="right">Amount</TableCell>
               <TableCell align="right">Price (USD)</TableCell>
-              <TableCell align="right">Total Value (USD)</TableCell>
-              <TableCell align="right">Wallet Id</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -312,7 +253,6 @@ const TokenPage: React.FunctionComponent = (): JSX.Element => {
               </TableRow>
             ) : (
               rows.map((row, index) => {
-                const totalValue = (row.amount || 0) * (row.price || 0);
                 return (
                   <TableRow
                     key={index}
@@ -326,16 +266,7 @@ const TokenPage: React.FunctionComponent = (): JSX.Element => {
                     </TableCell>
                     <TableCell>{row.network}</TableCell>
                     <TableCell align="right">
-                      {row.amount || '0'}
-                    </TableCell>
-                    <TableCell align="right">
                       ${row.price || '0'}
-                    </TableCell>
-                    <TableCell align="right">
-                      ${totalValue}
-                    </TableCell>
-                    <TableCell align="right">
-                    <Button onClick={() => router.push(`/wallet/${row.walletId}`)}>Open Wallet</Button>
                     </TableCell>
                   </TableRow>
                 );

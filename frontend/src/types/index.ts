@@ -26,7 +26,6 @@ export interface Token {
   symbol: string;          // Symbole du token (ex: ETH, BTC)
   //decimals: number;        // Nombre de décimales du token
   network: NetworkType;    // Réseau sur lequel se trouve le token
-  walletId: string;
   //type: TokenType;         // Type de token
   //logoUrl?: string;        // URL du logo du token
   //websiteUrl?: string;     // Site web officiel
@@ -40,10 +39,9 @@ export interface Token {
   //volume24h?: number;      // Volume sur 24h
   
   // Données supplémentaires optionnelles
-  lastKnownPrice?: number;
   coingeckoId?: string;    // ID CoinGecko pour les API externes
-  manualPrice?: number;
-  amount?: number;
+  lastKnownPrice?: { usd: number };
+  manualPrice?: { usd: number };
   //cmcId?: string;          // ID CoinMarketCap
 }
 
@@ -104,4 +102,26 @@ export interface TokenTransfer {
   token: Token;
   amount: string;
   valueUSD?: number;
+}
+
+export interface StakingPlatform {
+  name: string;
+  apy: number;          // Between 0 and 100000
+  lockupPeriod: number; // Positif integer
+}
+
+export interface Position {
+  _id: string;          // MongoDB ObjectId
+  token: PositionTokenWithPrice;        // MongoDB ObjectId reference
+  wallet: Wallet;       // MongoDB ObjectId reference
+  amount: number;       // Number with 18 décimales of precision
+  isStaking: boolean;   // Default: false
+  stakingPlatform?: StakingPlatform; // Required if isStaking is true
+  notes?: string;       // Max 1000 characters
+  lastUpdate: Date;     // Default: Date.now
+}
+
+export interface PositionTokenWithPrice extends Token {
+  lastKnownPrice?: { usd: number };
+  manualPrice?: { usd: number };
 }
