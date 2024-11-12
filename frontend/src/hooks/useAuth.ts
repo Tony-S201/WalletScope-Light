@@ -2,7 +2,7 @@ import { useAccount, useSignMessage } from "wagmi";
 import { useEffect, useState } from "react";
 
 export const useAuth = () => {
-  const { address, isConnected } = useAccount();
+  const { address } = useAccount();
   const { signMessageAsync } = useSignMessage();
   const [token, setToken] = useState<string | null>(null);
 
@@ -14,30 +14,27 @@ export const useAuth = () => {
 
   const login = async () => {
     try {
-      // Create a server nonce
-      const nonceRes = await fetch('/api/auth/nonce');
-      const nonce = await nonceRes.text();
+      // 1. Use timestamp as a nonce
+      const timestamp = Date.now();
 
-      // Message to sign
-      const message = `Login to App Nonce: ${nonce}`;
-
-      // Sign message with wallet
+      // 2. Create and sign the message
+      const message = `Login to App at Timestamp: ${timestamp}`;
       const signature = await signMessageAsync({ message });
 
-      // Check server side
-      const response = await fetch('/api/auth/verify', {
+      // 3. Check signature on server side
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ address, signature, message })
       });
 
-      const { token } = await response.json();
+      const { data } = await response.json();
 
-      // Save token in localstorage and state
-      localStorage.setItem('token', token);
-      setToken(token);
+      // 4. Save token in localstorage and state
+      localStorage.setItem('token', data.token);
+      setToken(data.token);
 
-      return token;
+      return data.token;
 
     } catch(error) {
       console.error('Login failed:', error);
@@ -50,22 +47,10 @@ export const useAuth = () => {
     setToken(null);
   };
 
-  const authFetch = async (url: string, options: RequestInit = {}) => {
-    if (!token) throw new Error('Not Authenticated');
-
-    const headers = {
-      ...options.headers,
-      'Authorization': `Bearer ${token}`
-    };
-
-    return fetch(url, { ...options, headers });
-  };
-
   return {
     token,
     login,
     logout,
-    authFetch,
     isAuthenticated: !!token,
     address
   }
