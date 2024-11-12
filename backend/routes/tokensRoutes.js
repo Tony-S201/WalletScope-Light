@@ -3,8 +3,9 @@ const express = require('express');
 // Controller
 const TokenController = require('../controllers/tokensController');
 
-// Middleware
+// Middlewares
 const validate = require('../middlewares/validator');
+const auth = require('../middlewares/auth');
 
 // Schema for middleware
 const tokenSchema = require('../validators/tokenValidator');
@@ -16,8 +17,8 @@ const router = express.Router();
 const tokenController = new TokenController();
 
 // Tokens routes.
-router.get('/all', tokenController.getTokens);
-router.post('/register', validate(tokenSchema.create), tokenController.registerToken);
-router.get('/:id', tokenController.getTokenById);
+router.get('/all', auth, tokenController.getTokens);
+router.post('/register', auth, validate(tokenSchema.create), tokenController.registerToken);
+router.get('/:id', auth, tokenController.getTokenById);
 
 module.exports = router;
