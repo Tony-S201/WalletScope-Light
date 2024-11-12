@@ -5,20 +5,18 @@ const { verifyMessage } = require('viem');
 class AuthController {
   constructor() {
     this.login = this.login.bind(this);
-    this.register = this.register.bind(this);
   }
 
   async login(req, res) {
     try {
-      const { address, signature } = req.body;
+      const { address, signature, timestamp } = req.body;
 
       // Use a timestamp as nonce
-      const currentTimeStamp = Date.now();
-      const message = `Login to App at Timestamp: ${currentTimeStamp}`;
+      const message = `Login to App at Timestamp: ${timestamp}`;
 
       // Check if the timestamp is not old (5 min max)
-      const providedTimestamp = parseInt(message.split('timestamp: ')[1]);
-      if (Math.abs(currentTimeStamp - providedTimestamp) > 5 * 60 * 1000) {
+      const currentTimeStamp = Date.now();
+      if (Math.abs(currentTimeStamp - timestamp) > 5 * 60 * 1000) {
         return res.status(401).json({
           success: false,
           error: 'Login request expired'

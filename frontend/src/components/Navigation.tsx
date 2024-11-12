@@ -1,88 +1,32 @@
 import Link from 'next/link';
-import { useAccount } from 'wagmi';
+import { useEffect } from 'react';
+import { useAccount, useDisconnect } from 'wagmi';
+import { useAuth } from '../hooks/useAuth';
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { ThemeToggle } from './ThemeToggle';
 import { ConnectedNav } from './NavigationConnected';
 
-import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { useAuth } from '../hooks/useAuth';
-
 const Navigation: React.FunctionComponent = (): JSX.Element => {
   const { isConnected } = useAccount();
-  const { login } = useAuth();
-  const { openConnectModal } = useConnectModal();
+  const { disconnect } = useDisconnect();
+  const { login, logout, isAuthenticated } = useAuth();
 
-  // Custom connect button component
-  const CustomConnectButton = () => (
-    <ConnectButton.Custom>
-      {({
-        account,
-        chain,
-        openAccountModal,
-        openChainModal,
-        openConnectModal,
-        mounted,
-      }) => {
-        const ready = mounted;
-        const connected = ready && account && chain;
+  useEffect(() => {
+    const handleConnection = async () => {
+      if (isConnected && !isAuthenticated) {
+        try {
+          await login();
+        } catch(error) {
+          console.error('Login failed:', error);
+          disconnect();
+          logout();
+        }
+      }
+    };
 
-        return (
-          <div
-            {...(!ready && {
-              'aria-hidden': true,
-              'style': {
-                opacity: 0,
-                pointerEvents: 'none',
-                userSelect: 'none',
-              },
-            })}
-          >
-            {(() => {
-              if (!connected) {
-                return (
-                  <button
-                    onClick={async () => {
-                      openConnectModal();
-                      // Wait for connection
-                      const checkConnection = setInterval(async () => {
-                        if (isConnected) {
-                          clearInterval(checkConnection);
-                          try {
-                            await login();
-                          } catch (error) {
-                            console.error('Login failed:', error);
-                          }
-                        }
-                      }, 1000);
-                      // Clean interval if not connected
-                      setTimeout(() => clearInterval(checkConnection), 30000);
-                    }}
-                    type="button"
-                  >
-                    Connect Wallet
-                  </button>
-                );
-              }
-
-              return (
-                <div style={{ display: 'flex', gap: 12 }}>
-                  <button onClick={openChainModal} type="button">
-                    {chain.name}
-                  </button>
-
-                  <button onClick={openAccountModal} type="button">
-                    {account.displayName}
-                    {account.displayBalance ? ` (${account.displayBalance})` : ''}
-                  </button>
-                </div>
-              );
-            })()}
-          </div>
-        );
-      }}
-    </ConnectButton.Custom>
-  );
+    handleConnection();
+  }, [isConnected]);
 
   return (
     <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -96,7 +40,7 @@ const Navigation: React.FunctionComponent = (): JSX.Element => {
           <ConnectedNav connected={isConnected} />
         </div>
         <div className="flex space-x-8">
-          <CustomConnectButton/>
+          <ConnectButton/>
           <ThemeToggle />
         </div>
       </div>

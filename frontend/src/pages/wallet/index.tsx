@@ -1,4 +1,4 @@
-import { useApi } from "../../hooks/useApi";
+import { useAuthApi } from "../../hooks/useAuthApi";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { type Wallet } from "../../types";
@@ -20,8 +20,8 @@ interface WalletForm {
 }
 
 const WalletPage: React.FunctionComponent = (): JSX.Element => {
-  const { data: wallets, loading, error, fetchData } = useApi<Wallet[]>();
-  const { loading: postLoading, error: postError, postData } = useApi<Wallet[]>();
+  const { data: wallets, loading, error, fetchData } = useAuthApi<Wallet[]>();
+  const { loading: postLoading, error: postError, postData } = useAuthApi<Wallet[]>();
   const { address: connectedAddress, isConnected } = useAccount();
   const router = useRouter();
 

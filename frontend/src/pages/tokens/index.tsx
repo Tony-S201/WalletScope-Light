@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
-import { useApi } from '../../hooks/useApi';
+import { useAuthApi } from '../../hooks/useAuthApi';
 import { useRouter } from "next/navigation";
 import { type Token } from '../../types';
 import { Table, TableRow, TableHead, TableCell, TableBody, TextField, Button, MenuItem } from '@mui/material';
@@ -34,9 +34,9 @@ interface TokenForm {
 
 const TokenPage: React.FunctionComponent = (): JSX.Element => {
   // Custom Hooks
-  const { data: tokens, loading, error, fetchData: fetchTokensData } = useApi<Token[]>();
-  const { data: wallets, loading: walletsLoading, error: walletsError, fetchData: fetchWalletsData } = useApi<Token[]>();
-  const { loading: postLoading, error: postError, postData } = useApi<Token[]>();
+  const { data: tokens, loading, error, fetchData: fetchTokensData } = useAuthApi<Token[]>();
+  const { data: wallets, loading: walletsLoading, error: walletsError, fetchData: fetchWalletsData } = useAuthApi<Token[]>();
+  const { loading: postLoading, error: postError, postData } = useAuthApi<Token[]>();
 
   const { address: connectedAddress, isConnected } = useAccount();
   const router = useRouter();

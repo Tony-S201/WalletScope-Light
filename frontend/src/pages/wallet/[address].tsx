@@ -1,7 +1,7 @@
 import QRCode from 'react-qr-code';
 import { useRouter } from 'next/router';
 import { useAccount } from 'wagmi';
-import { useApi } from '../../hooks/useApi';
+import { useAuthApi } from '../../hooks/useAuthApi';
 import { useEffect, useState } from 'react';
 import { type Token } from '../../types';
 import { Table, TableRow, TableHead, TableCell, TableBody, TextField, Button } from '@mui/material';
@@ -29,8 +29,8 @@ interface TokenForm {
 
 const WalletDetail: React.FunctionComponent = (): JSX.Element => {
   // Custom Hooks
-  const { data: tokens, loading, error, fetchData } = useApi<Token[]>();
-  const { loading: postLoading, error: postError, postData } = useApi<Token[]>();
+  const { data: tokens, loading, error, fetchData } = useAuthApi<Token[]>();
+  const { loading: postLoading, error: postError, postData } = useAuthApi<Token[]>();
 
   const { address: connectedAddress, isConnected } = useAccount();
   const router = useRouter();

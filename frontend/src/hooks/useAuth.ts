@@ -25,7 +25,7 @@ export const useAuth = () => {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ address, signature, message })
+        body: JSON.stringify({ address, signature, timestamp })
       });
 
       const { data } = await response.json();
@@ -43,7 +43,7 @@ export const useAuth = () => {
   };
 
   const logout = () => {
-    localStorage.remove('token');
+    localStorage.removeItem('token');
     setToken(null);
   };
 
