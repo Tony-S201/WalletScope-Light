@@ -10,13 +10,12 @@ export function useAuthApi<T>() {
   const { token } = useAuth();
 
   const authApiService = {
-    async get<T>(endpoint: string) {
-      const response = await fetch(`/api/${endpoint}`, {
+    get<T>(endpoint: string) {
+      return apiService.get<T>(`/api/${endpoint}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      return apiService.get<T>(endpoint);
     },
 
     async post<T>(endpoint: string, data: any) {

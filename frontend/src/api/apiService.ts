@@ -13,11 +13,18 @@ interface ApiResponse<T> {
   error: string | null;
 }
 
+interface RequestOptions {
+  headers?: HeadersInit;
+}
+
 export const apiService = {
   // GET
-  async get<T>(endpoint: string): Promise<ApiResponse<T>> {
+  async get<T>(endpoint: string, options?: RequestOptions): Promise<ApiResponse<T>> {
     try {
-      const response = await fetch(`/api/${endpoint}`);
+      const response = await fetch(`${endpoint}`, {
+        headers: options?.headers
+      });
+
       if (!response.ok) {
         throw new Error(`HTTP Error - Status: ${response.status}`);
       }
@@ -41,12 +48,13 @@ export const apiService = {
   },
 
   // POST
-  async post<T>(endpoint: string, data: any): Promise<ApiResponse<T>> {
+  async post<T>(endpoint: string, data: any, options?: RequestOptions): Promise<ApiResponse<T>> {
     try {
-      const response = await fetch(`/api/${endpoint}`, {
+      const response = await fetch(`${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...options?.headers
         },
         body: JSON.stringify(data)
       });
@@ -71,12 +79,13 @@ export const apiService = {
   },
 
   // PUT
-  async put<T>(endpoint: string, data: any): Promise<ApiResponse<T>> {
+  async put<T>(endpoint: string, data: any, options?: RequestOptions): Promise<ApiResponse<T>> {
     try {
-      const response = await fetch(`/api/${endpoint}`, {
+      const response = await fetch(`${endpoint}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          ...options?.headers
         },
         body: JSON.stringify(data),
       });
@@ -101,10 +110,11 @@ export const apiService = {
   },
 
   // DELETE
-  async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
+  async delete<T>(endpoint: string, options?: RequestOptions): Promise<ApiResponse<T>> {
     try {
-      const response = await fetch(`/api/${endpoint}`, {
+      const response = await fetch(`${endpoint}`, {
         method: 'DELETE',
+        headers: options?.headers
       });
 
       const jsonResponse = await response.json() as ApiSuccessResponse<T> | ApiErrorResponse;
@@ -127,12 +137,13 @@ export const apiService = {
   },
 
   // PATCH
-  async patch<T>(endpoint: string, data: any): Promise<ApiResponse<T>> {
+  async patch<T>(endpoint: string, data: any, options?: RequestOptions): Promise<ApiResponse<T>> {
     try {
-      const response = await fetch(`/api/${endpoint}`, {
+      const response = await fetch(`${endpoint}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
+          ...options?.headers
         },
         body: JSON.stringify(data),
       });
