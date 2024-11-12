@@ -1,7 +1,7 @@
 const express = require('express');
 
 // Controller
-const PositionController = require('../controllers/positionController');
+const PositionController = require('../controllers/positionsController');
 
 // Middlewares
 const validate = require('../middlewares/validator');
@@ -19,24 +19,24 @@ const positionController = new PositionController();
 /* Routes */
 
 // Get all positions
-router.get('/positions', auth, positionController.getPositions);
+router.get('/', auth, positionController.getPositions);
 
 // Create new position
-router.post('/positions', auth, validate(positionSchema), positionController.createPosition);
-
-// Get specific position by ID
-router.get('/positions/:id', auth, positionController.getPositionById);
-
-// Update position
-router.put('/positions/:id', auth, validate(positionSchema), positionController.updatePosition);
-
-// Delete position
-router.delete('/positions/:id', auth, positionController.deletePosition);
-
-// Get all positions for a specific wallet
-router.get('/wallets/:walletId/positions', auth, positionController.getPositionsByWallet);
+router.post('/', auth, validate(positionSchema), positionController.createPosition);
 
 // Get all staking positions
-router.get('/positions/staking', auth, positionController.getStakingPositions);
+router.get('/staking', auth, positionController.getStakingPositions);
+
+// Get specific position by ID
+router.get('/:id', auth, positionController.getPositionById);
+
+// Update position
+router.put('/:id', auth, validate(positionSchema), positionController.updatePosition);
+
+// Delete position
+router.delete('/:id', auth, positionController.deletePosition);
+
+// Get all positions for a specific wallet
+router.get('/wallet/:walletId', auth, positionController.getPositionsByWallet);
 
 module.exports = router;

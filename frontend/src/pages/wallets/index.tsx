@@ -172,7 +172,7 @@ const WalletPage: React.FunctionComponent = (): JSX.Element => {
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell>
-                    <Button onClick={() => router.push(`/wallet/${row._id}`)}>Open Wallet</Button>
+                    <Button onClick={() => router.push(`/wallets/${row._id}`)}>Open Wallet</Button>
                   </TableCell>
                   <TableCell component="th" scope="row">{row.name}</TableCell>
                   <TableCell align="right">{row.address}</TableCell>

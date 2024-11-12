@@ -72,8 +72,8 @@ const PositionPage: React.FunctionComponent = (): JSX.Element => {
 
   // Custom Hooks
   const { data: positions, loading, error, fetchData: fetchPositionsData } = useAuthApi<Position[]>();
-  const { data: tokens } = useAuthApi<Token[]>();
-  const { data: wallets } = useAuthApi<Wallet[]>();
+  const { data: tokens, fetchData: fetchTokensData } = useAuthApi<Token[]>();
+  const { data: wallets, fetchData: fetchWalletsData } = useAuthApi<Wallet[]>();
   const { loading: postLoading, error: postError, postData, deleteData } = useAuthApi<Position[]>();
 
   const { address: connectedAddress, isConnected } = useAccount();
@@ -81,6 +81,8 @@ const PositionPage: React.FunctionComponent = (): JSX.Element => {
 
   useEffect(() => {
     if (isConnected) {
+      fetchTokensData('/tokens/all');
+      fetchWalletsData('/wallets/all');
       fetchPositionsData('/positions');
     }
   }, [fetchPositionsData, isConnected]);
@@ -141,7 +143,7 @@ const PositionPage: React.FunctionComponent = (): JSX.Element => {
       }
 
       const positionData = {
-        token: formData.token,
+        token: formData.token._id,
         wallet: formData.wallet,
         amount: Number(formData.amount),
         isStaking: formData.isStaking,
@@ -207,7 +209,144 @@ const PositionPage: React.FunctionComponent = (): JSX.Element => {
     <div className="space-y-6">
       {/* Form Section */}
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-        {/* ... [Le reste du code du formulaire reste identique] ... */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Token Selection */}
+          <TextField
+            select
+            fullWidth
+            label="Token"
+            name="token"
+            value={formData.token._id || ''}  // Ajout d'une valeur par défaut
+            onChange={(e) => {
+              const selectedToken = tokens?.find(t => t._id === e.target.value);
+              setFormData(prev => ({
+                ...prev,
+                token: selectedToken || initialFormData.token
+              }));
+            }}
+            required
+          >
+            {tokens?.map((token) => (
+              <MenuItem key={token._id} value={token._id}>
+                {token.name} ({token.symbol})
+              </MenuItem>
+            )) || <MenuItem value="">Select a token</MenuItem>}
+          </TextField>
+
+          {/* Wallet Selection */}
+          <TextField
+            select
+            fullWidth
+            label="Wallet"
+            name="wallet"
+            value={formData.wallet || ''}  // Ajout d'une valeur par défaut
+            onChange={handleInputChange}
+            required
+          >
+            {wallets?.map((wallet) => (
+              <MenuItem key={wallet._id} value={wallet._id}>
+                {wallet.name}
+              </MenuItem>
+            )) || <MenuItem value="">Select a wallet</MenuItem>}
+          </TextField>
+
+          {/* Amount Input */}
+          <TextField
+            fullWidth
+            label="Amount"
+            name="amount"
+            type="number"
+            value={formData.amount}
+            onChange={handleInputChange}
+            required
+            InputProps={{
+              inputProps: { min: 0, step: "any" }
+            }}
+          />
+
+          {/* Staking Toggle */}
+          <FormControlLabel
+            control={
+              <Switch
+                checked={formData.isStaking}
+                onChange={handleStakingToggle}
+                name="isStaking"
+              />
+            }
+            label="Staking Position"
+          />
+
+          {/* Staking Platform Fields - Only shown if isStaking is true */}
+          {formData.isStaking && (
+            <>
+              <TextField
+                fullWidth
+                label="Platform Name"
+                name="stakingPlatform.name"
+                value={formData.stakingPlatform.name}
+                onChange={handleInputChange}
+                required={formData.isStaking}
+              />
+
+              <TextField
+                fullWidth
+                label="APY (%)"
+                name="stakingPlatform.apy"
+                type="number"
+                value={formData.stakingPlatform.apy}
+                onChange={handleInputChange}
+                required={formData.isStaking}
+                InputProps={{
+                  inputProps: { min: 0, step: "0.01" }
+                }}
+              />
+
+              <TextField
+                fullWidth
+                label="Lockup Period (days)"
+                name="stakingPlatform.lockupPeriod"
+                type="number"
+                value={formData.stakingPlatform.lockupPeriod}
+                onChange={handleInputChange}
+                required={formData.isStaking}
+                InputProps={{
+                  inputProps: { min: 0 }
+                }}
+              />
+            </>
+          )}
+
+          {/* Notes Field */}
+          <TextField
+            fullWidth
+            label="Notes"
+            name="notes"
+            value={formData.notes}
+            onChange={handleInputChange}
+            multiline
+            rows={3}
+            className="col-span-full"
+          />
+
+          {/* Submit Button */}
+          <div className="col-span-full">
+            <Button
+              variant="contained"
+              onClick={handleAddPosition}
+              disabled={postLoading}
+              startIcon={postLoading ? <CircularProgress size={20} /> : null}
+            >
+              {postLoading ? 'Adding Position...' : 'Add Position'}
+            </Button>
+          </div>
+
+          {/* Error Display */}
+          {postError && (
+            <div className="col-span-full">
+              <Alert severity="error">{postError}</Alert>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Search / Filter Section - Amélioré */}
