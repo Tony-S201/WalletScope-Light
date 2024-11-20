@@ -1,11 +1,9 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { useAccount } from "wagmi";
 
 export const ConnectedNav = ({ connected }: { connected: boolean }) => {
   const router = useRouter();
   const isActive = (path: string) => router.pathname === path;
-  const { address } = useAccount();
 
   if(connected) {
     return (

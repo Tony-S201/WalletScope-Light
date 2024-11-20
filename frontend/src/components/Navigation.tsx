@@ -1,32 +1,11 @@
 import Link from 'next/link';
-import { useEffect } from 'react';
-import { useAccount, useDisconnect } from 'wagmi';
-import { useAuth } from '../hooks/useAuth';
-
+import { useAccount } from 'wagmi';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { ThemeToggle } from './ThemeToggle';
 import { ConnectedNav } from './NavigationConnected';
 
 const Navigation: React.FunctionComponent = (): JSX.Element => {
   const { isConnected } = useAccount();
-  const { disconnect } = useDisconnect();
-  const { login, logout, isAuthenticated } = useAuth();
-
-  useEffect(() => {
-    const handleConnection = async () => {
-      if (isConnected && !isAuthenticated) {
-        try {
-          await login();
-        } catch(error) {
-          console.error('Login failed:', error);
-          disconnect();
-          logout();
-        }
-      }
-    };
-
-    handleConnection();
-  }, [isConnected]);
 
   return (
     <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -40,12 +19,12 @@ const Navigation: React.FunctionComponent = (): JSX.Element => {
           <ConnectedNav connected={isConnected} />
         </div>
         <div className="flex space-x-8">
-          <ConnectButton/>
+          <ConnectButton />
           <ThemeToggle />
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
 export default Navigation;

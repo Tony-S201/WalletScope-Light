@@ -5,7 +5,7 @@ const WalletController = require('../controllers/walletsController');
 
 // Middlewares
 const validate = require('../middlewares/validator');
-const auth = require('../middlewares/auth');
+const authMiddleware = require('../middlewares/auth');
 
 // Schema for middleware
 const walletSchema = require('../validators/walletValidator');
@@ -17,9 +17,9 @@ const router = express.Router();
 const walletController = new WalletController();
 
 // Wallets routes.
-router.get('/all', auth, walletController.getWallets);
-router.post('/register', auth, validate(walletSchema.create), walletController.registerWallet);
-router.get('/:id', auth ,walletController.getWalletById);
-router.get('/user/:userAddress', auth, walletController.getWalletByUser);
+router.get('/all', authMiddleware, walletController.getWallets);
+router.post('/register', authMiddleware, validate(walletSchema.create), walletController.registerWallet);
+router.get('/:id', authMiddleware, walletController.getWalletById);
+router.get('/user/:userAddress', authMiddleware, walletController.getWalletByUser);
 
 module.exports = router;

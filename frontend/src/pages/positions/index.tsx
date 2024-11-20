@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { useAuthApi } from '../../hooks/useAuthApi';
-import { useRouter } from "next/navigation";
 import { type Position, type Token, type Wallet, type PositionTokenWithPrice, NetworkType } from '../../types';
 import { 
   Table, TableRow, TableHead, TableCell, TableBody, TextField, 
@@ -71,13 +70,12 @@ const PositionPage: React.FunctionComponent = (): JSX.Element => {
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
 
   // Custom Hooks
-  const { data: positions, loading, error, fetchData: fetchPositionsData } = useAuthApi<Position[]>();
+  const { data: positions, loading: isLoading, error, fetchData: fetchPositionsData } = useAuthApi<Position[]>();
   const { data: tokens, fetchData: fetchTokensData } = useAuthApi<Token[]>();
   const { data: wallets, fetchData: fetchWalletsData } = useAuthApi<Wallet[]>();
   const { loading: postLoading, error: postError, postData, deleteData } = useAuthApi<Position[]>();
 
   const { address: connectedAddress, isConnected } = useAccount();
-  const router = useRouter();
 
   useEffect(() => {
     if (isConnected) {
@@ -408,7 +406,7 @@ const PositionPage: React.FunctionComponent = (): JSX.Element => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {loading ? (
+            {isLoading ? (
               <TableRow>
                 <TableCell colSpan={8} align="center">
                   <CircularProgress />

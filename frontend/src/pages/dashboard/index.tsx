@@ -68,10 +68,6 @@ const DashboardPage: React.FunctionComponent = (): JSX.Element => {
     return <CircularProgress />;
   }
 
-  if (error) {
-    return <Alert severity="error">{error}</Alert>;
-  }
-
   return (
     <div className="space-y-6">
       {/* Total value */}
