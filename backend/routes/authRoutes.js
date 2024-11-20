@@ -17,5 +17,6 @@ const authController = new AuthController();
 
 // Routes
 router.post('/login', validate(authSchema.login), authController.login);
+//router.get('/check', authController.check);
 
 module.exports = router;

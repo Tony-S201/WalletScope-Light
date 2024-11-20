@@ -18,6 +18,8 @@ connectDB();
 // Middleware
 app.use(cookieParser());
 app.use(express.json());
+
+// CORS (which domains can use API, which requests methods are authorized and which headers can be sent, and if cookie can be sent)
 app.use(cors({
     origin: process.env.FRONT_URL ?? 'http://localhost:3000',
     credentials: true,

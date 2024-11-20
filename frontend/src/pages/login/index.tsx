@@ -1,52 +1,74 @@
-// pages/login.tsx
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount } from 'wagmi';
-import { useAuth } from './../../hooks/useAuth';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useAccount } from "wagmi";
+import { useEffect, useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
+import { useRouter } from "next/router";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function LoginPage() {
-  const { address, isConnected } = useAccount();
-  const { login, isLoading, error } = useAuth();
+  const { isConnected } = useAccount();
+  const { login } = useAuth();
   const router = useRouter();
+  const [loginState, setLoginState] = useState<'idle' | 'processing' | 'success'>('idle');
 
   useEffect(() => {
-    // Check if user has valid token
-    const checkAuth = async () => {
-      const token = document.cookie.includes('token');
-      if (token && isConnected) {
-        router.push('/dashboard');
+    let isMounted = true;
+
+    const handleLogin = async () => {
+      // Ne rien faire si on n'est pas connecté ou si login déjà en cours/réussi
+      if (!isConnected || loginState !== 'idle') {
+        return;
+      }
+
+      try {
+        console.log('🚀 Starting login process');
+        setLoginState('processing');
+        
+        await login();
+        
+        if (isMounted) {
+          setLoginState('success');
+          console.log('✅ Login successful');
+          // Petit délai avant la redirection pour éviter les problèmes de state
+          setTimeout(() => {
+            if (isMounted) {
+              router.replace('/dashboard');
+            }
+          }, 100);
+        }
+      } catch (error) {
+        console.error('❌ Login failed:', error);
+        if (isMounted) {
+          setLoginState('idle');
+        }
       }
     };
 
-    checkAuth();
+    handleLogin();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isConnected, login, loginState, router]);
+
+  // Reset login state when disconnected
+  useEffect(() => {
+    if (!isConnected) {
+      setLoginState('idle');
+    }
   }, [isConnected]);
 
-  useEffect(() => {
-    // When wallet is connected, trigger login
-    if (isConnected && address) {
-      handleLogin();
-    }
-  }, [isConnected, address]);
-
-  const handleLogin = async () => {
-    try {
-      await login();
-      router.push('/dashboard');
-    } catch (err) {
-      console.error('Login error:', err);
-    }
-  };
+  // Protection contre les rendus multiples
+  if (loginState === 'success') {
+    return <div>Redirecting...</div>;
+  }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="mb-8 text-2xl font-bold">Login</h1>
-      <ConnectButton />
-      {error && (
-        <p className="mt-4 text-red-500">{error}</p>
-      )}
-      {isLoading && (
-        <p className="mt-4">Loading...</p>
+    <div>
+      {loginState === 'processing' ? (
+        <div>Processing login...</div>
+      ) : (
+        // ... reste du JSX de login
+        <ConnectButton/>
       )}
     </div>
   );

@@ -2,25 +2,37 @@ import { NextResponse } from "next/server";
 import { type NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 
-export const config = {
-  matcher: [
-    '/((?!api/auth|_next/static|_next/image|favicon.ico).*)',
-  ],
+interface JWTPayload {
+  address: string;
+  exp: number;
+  iat: number;
 }
 
-// Routes accessibles sans authentification
-const publicRoutes = ['/faq', '/login'];
+console.log('🚀 Middleware file loaded');
+
+export const config = {
+  matcher: {
+    source: '/((?!api/auth|_next|static|login|faq|favicon.ico).*)',
+    missing: [
+      { type: 'header', key: 'next-router-prefetch' },
+      { type: 'header', key: 'purpose', value: 'prefetch' }
+    ]
+  }
+}
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  console.log('Middleware called for path:', pathname);
 
-  if (publicRoutes.includes(pathname) || pathname === '/') {
-    return NextResponse.next();
-  }
+  console.log('\n=====================================');
+  console.log('⚡️ MIDDLEWARE EXECUTED');
+  console.log('📍 URL:', request.url);
+  console.log('📍 Method:', request.method);
+  console.log('=====================================\n')
+
+  const { pathname } = request.nextUrl;
+  console.log(`🛡️ Middleware - START [${pathname}]`);
 
   const token = request.cookies.get('token')?.value;
-  console.log('Token found:', !!token); // Log si le token existe
+  console.log('🔍 Middleware - Token exists:', !!token);
 
   if (!token) {
     console.log('No token, redirecting to login');
@@ -34,29 +46,27 @@ export async function middleware(request: NextRequest) {
     }
 
     const secret = new TextEncoder().encode(jwtSecret);
-    const { payload } = await jwtVerify(token, secret);
-
-    // Log le payload pour debug
+    const { payload } = await jwtVerify(token, secret) as { payload: JWTPayload };
     console.log('Token payload:', payload);
 
-    if ((payload.exp as number) * 1000 < Date.now()) {
+    // Vérification de l'expiration
+    if (payload.exp * 1000 < Date.now()) {
       console.log('Token expired');
       const response = NextResponse.redirect(new URL('/login', request.url));
       response.cookies.delete('token');
       return response;
     }
 
+    // Ajout de l'adresse aux headers
     const requestHeaders = new Headers(request.headers);
-    requestHeaders.set('x-wallet-address', payload.address as string);
+    requestHeaders.set('x-wallet-address', payload.address);
 
-    // Cloner la requête avec les nouveaux headers
-    const response = NextResponse.next({
+    console.log(`🛡️ Middleware - END [${pathname}] - User: ${payload.address}`);
+    return NextResponse.next({
       request: {
         headers: requestHeaders,
       },
     });
-
-    return response;
 
   } catch (error) {
     console.log('Token verification failed:', error);

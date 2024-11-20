@@ -84,6 +84,47 @@ class AuthController {
       });
     }
   }
+
+/*   async check(req, res) {
+    try {
+      // Get token from cookie
+      const token = req.cookies.token;
+      
+      if (!token) {
+        return res.status(401).json({
+          success: false,
+          error: 'No token provided'
+        });
+      }
+  
+      // Check token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      
+      // Check if an associated user exist in DB
+      const user = await UserRepository.findByAddress(decoded.address);
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          error: 'User not found'
+        });
+      }
+  
+      return res.status(200).json({
+        success: true,
+        data: {
+          address: decoded.address,
+          userId: decoded.userId
+        }
+      });
+  
+    } catch (error) {
+      console.error('Token verification failed:', error);
+      return res.status(401).json({
+        success: false,
+        error: 'Invalid token'
+      });
+    }
+  } */
 }
 
 module.exports = AuthController;
